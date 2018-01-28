@@ -6,5 +6,7 @@ public class Main {
         // for testing purposes, project has files
         //    src/textfile.txt
         //    src/kalevala.txt
+        Printer p = new Printer("src/textfile.txt");
+        p.printLinesWhichContain("vanha");
     }
 }
