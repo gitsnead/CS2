@@ -8,5 +8,8 @@ public class Main {
         // test your code here
 
         File file = new File("src/testfile.txt");
+        Analysis stats = new Analysis(file);
+        System.out.println(stats.lines());
+        System.out.println(stats.characters());
     }
 }
