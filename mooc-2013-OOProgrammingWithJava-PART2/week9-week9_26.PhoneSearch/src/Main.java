@@ -35,12 +35,16 @@ public class Main {
                     menu.searchNumber(reader);
                     break;
                 case '4':
+                    menu.addAddress(reader);
                     break;
                 case '5':
+                    menu.searchPersonInfo(reader);
                     break;
                 case '6':
+                    menu.deleteContact(reader);
                     break;
                 case '7':
+                    menu.filteredSearch(reader);
                     break;
                 case 'x':
                     break loop;

@@ -5,9 +5,9 @@
  */
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -15,51 +15,96 @@ import java.util.Map;
  */
 public class Menu {
 
-    private Map<String, List<String>> phones = new HashMap<String, List<String>>();
-    private Map<String, List<String>> names = new HashMap<String, List<String>>();
+    private Contact people;
+
+    public Menu() {
+        this.people = new Contact();
+    }
+
+    private String input(String prompt, Scanner reader) {
+        System.out.print(prompt);
+        return reader.nextLine();
+    }
+
+    private String white(int space) {
+        String spacing = "";
+        for (int i = 0; i < space; i++) {
+            spacing += " ";
+        }
+        return spacing;
+    }
+
+    private void printNumbers(ArrayList<String> numbers, int spaces) {
+        if (numbers.isEmpty()) {
+            System.out.println("  not found");
+        }
+        for (String number : numbers) {
+            System.out.println(white(spaces) + number);
+        }
+    }
+
+    private void printPersonInfo(String name) {
+        if (this.people.hasInfo(name)) {
+            System.out.println(this.people.searchAddressbyPerson(name));
+            if (this.people.getPhones().containsKey(name)) {
+                System.out.println("  phone numbers:");
+                printNumbers(this.people.searchNumbersByPerson(name), 3);
+            } else {
+                System.out.println("  phone number not found");
+            }
+        } else {
+            System.out.println("  not found");
+        }
+    }
 
     public void addNumber(Scanner reader) {
-        System.out.print("whose number: ");
-        String name = reader.nextLine();
-        System.out.print("number: ");
-        String phone = reader.nextLine();
-        if (this.phones.containsKey(name)) {
-            this.phones.get(name).add(phone);
-        } else {
-            this.phones.put(name, new ArrayList());
-            this.phones.get(name).add(phone);
-        }
-        if (this.names.containsKey(phone)) {
-            this.names.get(phone).add(name);
-        } else {
-            this.names.put(phone, new ArrayList());
-            this.names.get(phone).add(name);
-        }
+        String name = input("whose number: ", reader);
+        String phone = input("number: ", reader);
+        this.people.addPhone(name, phone);
     }
 
     public void searchPerson(Scanner reader) {
-        System.out.print("whose number: ");
-        String name = reader.nextLine();
-        if (this.phones.containsKey(name)) {
-            List<String> numbers = this.phones.get(name);
-            for (int i = 0; i < this.phones.get(name).size(); i++) {
-                System.out.println(this.phones.get(name).get(i));
-            }
-        } else {
-            System.out.println("not found");
-        }
+        String name = input("whose number: ", reader);
+        this.printNumbers(people.searchNumbersByPerson(name), 1);
     }
 
     public void searchNumber(Scanner reader) {
-        System.out.print("number: ");
-        String number = reader.nextLine();
-        if (this.names.containsKey(number)) {
-            List<String> phones = this.names.get(number);
-            for (int i = 0; i < this.names.get(number).size(); i++) {
-                System.out.println(this.names.get(number).get(i));
-            }
+        String number = input("number: ", reader);
+        System.out.print(this.people.searchPersonByNumber(number));
+    }
+
+    public void addAddress(Scanner reader) {
+        String name = input("whose address: ", reader);
+        String street = input("street: ", reader);
+        String city = input("city: ", reader);
+        this.people.addAddress(name, street, city);
+    }
+
+    public void searchPersonInfo(Scanner reader) {
+        String name = input("whose information: ", reader);
+        this.printPersonInfo(name);
+    }
+
+    public void deleteContact(Scanner reader) {
+        String name = input("whose information: ", reader);
+        this.people.getPhones().remove(name);
+        this.people.getHome().remove(name);
+    }
+
+    public void filteredSearch(Scanner reader) {
+        String term = input("keyword (if empty, all listed): ", reader);
+        HashSet<String> peopleHits = this.people.searchKeyword(term);
+        if (peopleHits.isEmpty()) {
+            System.out.println("");
+            System.out.println("keyword not found");
         } else {
-            System.out.println("not found");
+            List<String> peopleHitsSorted = new ArrayList<String>(peopleHits);
+            Collections.sort(peopleHitsSorted);
+            for (String name : peopleHitsSorted) {
+                System.out.println("");
+                System.out.println(" " + name);
+                this.printPersonInfo(name);
+            }
         }
     }
 }
