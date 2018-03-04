@@ -50,7 +50,7 @@ public class Container {
         }
 
         volume = volume - amount;
-        return amount;
+        return volume;
     }
 
     @Override
